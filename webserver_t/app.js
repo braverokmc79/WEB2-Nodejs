@@ -9,9 +9,15 @@ var app = http.createServer(function (request, response) {
   var pathname = url.parse(_url, true).pathname;
 
   if (pathname === '/') {
-    response.writeHead(200);
-    fs.readFile(`data/${queryData.id}`, 'utf-8', function (err, data) {
-      console.log(data);
+
+
+    fs.readFile(`data/${queryData.id}`, 'utf-8', function (err, description) {
+
+      if (queryData.id === undefined) {
+        title = "Welcome";
+        description = "Hello, Node.js";
+      }
+
       var template = `
                   <!doctype html>
           <html>
@@ -30,14 +36,15 @@ var app = http.createServer(function (request, response) {
             <p><a href="https://www.w3.org/TR/html5/" target="_blank" title="html5 speicification">
             Hypertext Markup Language (HTML)</a> is the standard markup language for <strong>creating <u>web</u> pages</strong> and web applications.Web browsers receive HTML documents from a web server or from local storage and render them into multimedia web pages. HTML describes the structure of a web page semantically and originally included cues for the appearance of the document.
             <img src="coding.jpg" width="100%">
-            </p><p style="margin-top:45px;">${data}
+            </p><p style="margin-top:45px;">${description}
             </p>
           </body>
-          </html>
-                  
+          </html>                  
                   `;
-
+      response.writeHead(200);
       response.end(template);
+
+
     });
 
   } else {
