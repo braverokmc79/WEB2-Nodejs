@@ -3,6 +3,7 @@ const fs = require('fs');
 const url = require("url");
 const qs = require("querystring");
 const template = require("../lib/template");
+const path = require("path");
 
 
 
@@ -10,6 +11,7 @@ const app = http.createServer(function (request, response) {
   const _url = request.url;
   const queryData = url.parse(_url, true).query;
   const pathname = url.parse(_url, true).pathname;
+
 
 
   if (pathname === '/') {
@@ -32,6 +34,7 @@ const app = http.createServer(function (request, response) {
       const post = qs.parse(body);
       let title = post.title;
       let description = post.description;
+      title = path.parse(title).base;
 
       fs.writeFile(`../data/${title}`, description, 'utf8', function (err) {
         response.writeHead(302, { Location: `/?id=${title}` });
@@ -51,9 +54,12 @@ const app = http.createServer(function (request, response) {
 
     request.on("end", function (data) {
       const post = qs.parse(body);
-      const id = post.id;
-      const title = post.title;
+      let id = post.id;
+      let title = post.title;
       const description = post.description;
+
+      id = path.parse(id + "").base;
+      title = path.parse(title).base;
 
       fs.rename(`../data/${id}`, `../data/${title}`, function (err) {
         fs.writeFile(`../data/${title}`, description, 'utf8', function (err) {
@@ -72,7 +78,9 @@ const app = http.createServer(function (request, response) {
 
     request.on("end", function (data) {
       const post = qs.parse(body);
-      const id = post.id;
+      let id = post.id;
+      id = path.parse(id + "").base;
+
       fs.unlink(`../data/${id}`, function (error) {
         response.writeHead(302, { Location: `/` });
         response.end("success");
