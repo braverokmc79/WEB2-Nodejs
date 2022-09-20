@@ -4,7 +4,7 @@ const url = require("url");
 const qs = require("querystring");
 const template = require("../lib/template");
 const path = require("path");
-
+const sanitizeHtml = require("sanitize-html");
 
 
 const app = http.createServer(function (request, response) {
@@ -32,8 +32,8 @@ const app = http.createServer(function (request, response) {
 
     request.on("end", function (data) {
       const post = qs.parse(body);
-      let title = post.title;
-      let description = post.description;
+      let title = sanitizeHtml(post.title);
+      let description = sanitizeHtml(post.description);
       title = path.parse(title).base;
 
       fs.writeFile(`../data/${title}`, description, 'utf8', function (err) {
@@ -55,8 +55,9 @@ const app = http.createServer(function (request, response) {
     request.on("end", function (data) {
       const post = qs.parse(body);
       let id = post.id;
-      let title = post.title;
-      const description = post.description;
+      let title = sanitizeHtml(post.title);
+      let description = sanitizeHtml(post.description);
+
 
       id = path.parse(id + "").base;
       title = path.parse(title).base;
