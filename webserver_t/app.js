@@ -100,8 +100,25 @@ const app = http.createServer(function (request, response) {
     commonPage(queryData, response, "update", null);
 
   } else if (pathname === '/update_process') {
-    response.writeHead(200);
-    response.end("succes");
+    let body = "";
+    request.on("data", function (data) {
+      body = body + data;
+    });
+
+    request.on("end", function (data) {
+      const post = qs.parse(body);
+      const id = post.id;
+      const title = post.title;
+      const description = post.description;
+
+      fs.rename(`../data/${id}`, `../data/${title}`, function (err) {
+        fs.writeFile(`../data/${title}`, description, 'utf8', function (err) {
+          response.writeHead(302, { Location: `/?id=${title}` });
+          response.end("success");
+        })
+      })
+
+    });
 
   } else {
     response.writeHead(400);
