@@ -14,5 +14,5 @@ function slowfunc(callback) {
     callback();
 }
 
-
 slowfunc(a);
+
