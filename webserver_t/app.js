@@ -39,7 +39,13 @@ function commonPage(queryData, response, head, body) {
         description = "Hello, Node.js";
         body = `<a href="/create">create</a><h2>${title}</h2>${description}`;
       } else {
-        body = `<a href="/create">create</a>&nbsp;&nbsp;&nbsp;<a href="/update?id=${title}">update</a><h2>${title}</h2>${description}`;
+        body = `<a href="/create">create</a>&nbsp;&nbsp;&nbsp;
+              <a href="/update?id=${title}">update</a>&nbsp;&nbsp;&nbsp;              
+              <form method="post" >
+                <input type="hidden" name="id" value='${title}' >
+                <input type="submit" value="delete" style="">
+              </form>
+              <h2>${title}</h2>${description}`;
       }
 
     } else if (head === "create") {
